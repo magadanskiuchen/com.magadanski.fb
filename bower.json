@@ -1,0 +1,33 @@
+{
+  "name": "com.magadanski.fb",
+  "homepage": "https://github.com/magadanskiuchen/com.magadanski.fb",
+  "authors": [
+    "Georgi Popov <magadanski_uchen@yahoo.com> (http://magadanski.com)"
+  ],
+  "description": "FB helper for the com.magadanski framework",
+  "main": "Connect.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "fb",
+    "magadanski",
+    "framework",
+    "Facebook",
+    "login",
+    "connect"
+  ],
+  "license": "GPLv3",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "*.json",
+    "*.md"
+  ],
+  "dependencies": {
+    "com.magadanski.core": "^1.0.1"
+  }
+}
