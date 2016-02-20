@@ -41,19 +41,27 @@ define('com.magadanski.fb.Connect', function () {
 				}
 			});
 			
+			FB.Event.subscribe('auth.statusChange', function(response) {
+				switch (response.status) {
+					case 'not_authorized':
+						handleNotAuthorized(response);
+						break;
+					case 'connected':
+						handleLogin(response);
+						break;
+					case 'unknown':
+						handleLogout(response);
+						break;
+				}
+			});
+			
 			var loginButton = document.querySelector(that.options.loginButton);
 			
 			if (loginButton) {
 				loginButton.addEventListener('click', function (e) {
 					e.preventDefault();
 					
-					FB.login(function (response) {
-						if (response.status === 'connected') {
-							handleLogin(response);
-						} else {
-							alert('You need to log in to use the application'); // TODO: i18n
-						}
-					}, { scope: that.options.scope });
+					that.login();
 				});
 			}
 			
@@ -63,14 +71,23 @@ define('com.magadanski.fb.Connect', function () {
 				logoutButton.addEventListener('click', function (e) {
 					e.preventDefault();
 					
-					FB.logout(function (response) {
-						handleLogout(response);
-					});
+					that.logout();
 				});
 			}
 			
 			initialized = true;
 		}
+	}
+	
+	function handleNotAuthorized(response) {
+		document.body.classList.add('guest');
+		document.body.classList.remove('user');
+		
+		if (typeof(that.options.onNotAuthorized) === 'function') {
+			that.options.onNotAuthorized();
+		}
+		
+		that.dispatchEvent('not_authorized', { response: response });
 	}
 	
 	function handleLogin(response) {
@@ -102,6 +119,7 @@ define('com.magadanski.fb.Connect', function () {
 	 * @constructor
 	 * @since 1.0.0
 	 * @extends {core.EventDispatcher}
+	 * @param {Object} options See Connect.defaultInitOptions
 	 */
 	var Connect = function (options) {
 		that = this;
@@ -222,7 +240,16 @@ define('com.magadanski.fb.Connect', function () {
 	
 	// public properties
 	/**
-	 * The default initialization options
+	 * The default initialization options.
+	 * 
+	 * Those options include `appId`, `xfbml`, `version`, `scope`, `loginButton`, `logoutButton`, `onConnected()`, `onLogout()` and `onNotAuthorized()`.
+	 * The only required option is `appId`. If you do not pass that none of the functionality will get executed.
+	 * The `xfbml` option is simply forwarded to FBs SDK, denoting whether XFBML tags on the page should be parsed. The default value us `true`.
+	 * The `version` option is another option passed to FBs SDK. This denotes that your code would expect functionality for that version of the API. The default value is 'v2.5'
+	 * You should pass a string with comma delimited permissions that your application needs as the `scope` option.
+	 * Pass a CSS selector for the `loginButton` option to hook proper login event handlers to the button.
+	 * The `logoutButton` option is similar to the `loginButton` one.
+	 * There are three options that should be used as callback functions: `onConnected()`, `onLogout()` and `onNotAthorized()`. Those are called respectively when the user logs-in, when he logs-out and when the page is loaded by a user who has loged-into Facebook but has not yet authenticated your application. Note that the `onNotAuthorized()` callback is executed on initialization of the Connect class (pretty-much on page load), so it may be annoying to the user to prompt them to log in right away.
 	 * 
 	 * @type {Object}
 	 */
@@ -231,12 +258,27 @@ define('com.magadanski.fb.Connect', function () {
 		xfbml: true,
 		version: 'v2.5',
 		scope: 'public_profile,email',
-		onConnected: function () {},
-		onLogout: function () {},
 		loginButton: '.login',
-		logoutButton: '.logout'
+		logoutButton: '.logout',
+		onConnected: function (response) {},
+		onLogout: function (response) {},
+		onNotAuthorized: function (response) {}
 	};
 	
 	// public methods
-	// Connect.protytype.functionName = function () {}
+	Connect.prototype.login = function () {
+		FB.login(function (response) {
+			if (response.status === 'connected') {
+				handleLogin(response);
+			} else {
+				handleNotAuthorized(response);
+			}
+		}, { scope: that.options.scope });
+	};
+	
+	Connect.prototype.logout = function () {
+		FB.logout(function (response) {
+			handleLogout(response);
+		});
+	};
 });
