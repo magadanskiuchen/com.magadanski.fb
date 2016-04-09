@@ -228,6 +228,16 @@ define('com.magadanski.fb.Connect', function () {
 		window.fbAsyncInit = function () {
 			that.setFbReady(true);
 		};
+		
+		// load FB JS SDK
+		// make sure the SDK is not loaded prior to settin the window.fbAsyncInit event handler
+		(function(d, s, id){
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id)) {return;}
+			js = d.createElement(s); js.id = id;
+			js.src = "//connect.facebook.net/" + that.options.locale + "/sdk.js";
+			fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));
 
 		document.addEventListener('DOMContentLoaded', function (e) {
 			that.setDomReady();
@@ -260,6 +270,7 @@ define('com.magadanski.fb.Connect', function () {
 		scope: 'public_profile,email',
 		loginButton: '.login',
 		logoutButton: '.logout',
+		locale: 'en_US',
 		onConnected: function (response) {},
 		onLogout: function (response) {},
 		onNotAuthorized: function (response) {}
