@@ -4,13 +4,13 @@
 
 Update default version of FB's JS SDK to 2.6.
 
-## [1.0.2 FB JS SDK now loaded from within the Connect class](https://github.com/magadanskiuchen/com.magadanski.fb/releases/tag/1.0.2)
+## [1.0.2 FB JS SDK now loaded from within the Connect class](https://github.com/magadanskiuchen/com.magadanski.fb/releases/tag/1.0.2) (2016-04-09)
 
 [Full changelog](https://github.com/magadanskiuchen/com.magadanski.fb/compare/1.0.1...1.0.2)
 
 Load FB JS SDK through the class, instead of having it as dependency.
 
-## [1.0.1 Event handler fix, new callback and public methods, updates to documentation](https://github.com/magadanskiuchen/com.magadanski.fb/releases/tag/1.0.1)
+## [1.0.1 Event handler fix, new callback and public methods, updates to documentation](https://github.com/magadanskiuchen/com.magadanski.fb/releases/tag/1.0.1) (2016-02-20)
 
 [Full changelog](https://github.com/magadanskiuchen/com.magadanski.fb/compare/1.0.0...1.0.1)
 
