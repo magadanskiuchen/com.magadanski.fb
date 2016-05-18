@@ -255,7 +255,7 @@ define('com.magadanski.fb.Connect', function () {
 	 * Those options include `appId`, `xfbml`, `version`, `scope`, `loginButton`, `logoutButton`, `onConnected()`, `onLogout()` and `onNotAuthorized()`.
 	 * The only required option is `appId`. If you do not pass that none of the functionality will get executed.
 	 * The `xfbml` option is simply forwarded to FBs SDK, denoting whether XFBML tags on the page should be parsed. The default value us `true`.
-	 * The `version` option is another option passed to FBs SDK. This denotes that your code would expect functionality for that version of the API. The default value is 'v2.5'
+	 * The `version` option is another option passed to FBs SDK. This denotes that your code would expect functionality for that version of the API. The default value is 'v2.6'
 	 * You should pass a string with comma delimited permissions that your application needs as the `scope` option.
 	 * Pass a CSS selector for the `loginButton` option to hook proper login event handlers to the button.
 	 * The `logoutButton` option is similar to the `loginButton` one.
@@ -266,7 +266,7 @@ define('com.magadanski.fb.Connect', function () {
 	Connect.prototype.defaultInitOptions = {
 		appId: '',
 		xfbml: true,
-		version: 'v2.5',
+		version: 'v2.6',
 		scope: 'public_profile,email',
 		loginButton: '.login',
 		logoutButton: '.logout',
