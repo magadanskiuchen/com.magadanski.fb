@@ -5,9 +5,9 @@
  * @author Georgi Popov
  * @version 1.0.0
  * @license http://www.gnu.org/licenses/gpl-3.0.en.html GPLv3
- * @uses com/magadanski/core/core.js
- * @uses com/magadanski/core/utils.js
- * @uses com/magadanski/core/EventDispatcher.js
+ * @requires com/magadanski/core/core.js
+ * @requires com/magadanski/core/utils.js
+ * @requires com/magadanski/core/EventDispatcher.js
  */
 
 define('com.magadanski.fb.Connect', function () {
@@ -15,11 +15,41 @@ define('com.magadanski.fb.Connect', function () {
 	var utils = inc('com.magadanski.utils', true);
 	
 	// private properties
+	/**
+	 * @access private
+	 * @inner
+	 * @member {Boolean} domReady
+	 * @memberOf Connect
+	 * @default
+	 */
 	var domReady = false;
+	
+	/**
+	 * @access private
+	 * @inner
+	 * @member {Boolean} fbReady
+	 * @memberOf Connect
+	 * @default
+	 */
 	var fbReady = false;
+	
+	/**
+	 * @access private
+	 * @inner
+	 * @member {Boolean} initialized
+	 * @memberOf Connect
+	 * @default
+	 */
 	var initialized = false;
 	
 	// private methods
+	/**
+	 * @access private
+	 * @inner
+	 * @memberOf Connect
+	 * @param  {Object} e
+	 * @return {void}
+	 */
 	function init(e) {
 		if (that.getDomReady() && that.getFbReady() && !initialized) {
 			FB.init({
@@ -79,6 +109,13 @@ define('com.magadanski.fb.Connect', function () {
 		}
 	}
 	
+	/**
+	 * @access private
+	 * @inner
+	 * @memberOf Connect
+	 * @param  {Object} response
+	 * @return {void}
+	 */
 	function handleNotAuthorized(response) {
 		document.body.classList.add('guest');
 		document.body.classList.remove('user');
@@ -87,9 +124,30 @@ define('com.magadanski.fb.Connect', function () {
 			that.options.onNotAuthorized();
 		}
 		
+		/**
+		 * Event dispatched when the user does not authorize the application.
+		 * 
+		 * When the "login" button is clicked or the `login` method is called
+		 * directly a popup is shown to the user asking for authorization of
+		 * the application.
+		 * 
+		 * If the user declines the application's authorization the `not_authorized`
+		 * event will be dispatched.
+		 * 
+		 * @event Connect#not_authorized
+		 * @type {Object}
+		 * @property {Obect} response FB API's response
+		 */
 		that.dispatchEvent('not_authorized', { response: response });
 	}
 	
+	/**
+	 * @access private
+	 * @inner
+	 * @memberOf Connect
+	 * @param  {Object} response
+	 * @return {void}
+	 */
 	function handleLogin(response) {
 		document.body.classList.add('user');
 		document.body.classList.remove('guest');
@@ -98,9 +156,27 @@ define('com.magadanski.fb.Connect', function () {
 			that.options.onConnected();
 		}
 		
+		/**
+		 * Event dispatched when the user's account is connected to the application.
+		 * 
+		 * This is called upon successful connection of the user's profile either
+		 * in response to them clicking on the "login" button or as some other direct
+		 * call of the `login` method.
+		 * 
+		 * @event Connect#login
+		 * @type {Object}
+		 * @property {Object} response FB API's response
+		 */
 		that.dispatchEvent('login', { response: response });
 	}
 	
+	/**
+	 * @access private
+	 * @inner
+	 * @memberOf Connect
+	 * @param  {Object} response
+	 * @return {void}
+	 */
 	function handleLogout(response) {
 		document.body.classList.add('guest');
 		document.body.classList.remove('user');
@@ -109,17 +185,51 @@ define('com.magadanski.fb.Connect', function () {
 			that.options.onLogout();
 		}
 		
+		/**
+		 * Event dispatched when the user's account is disconnected from the application.
+		 * 
+		 * This is called upon successful disconnection of the user's profile either in
+		 * response to them clicking on the "logout" button or as some other direct call
+		 * of the `logout` method.
+		 * 
+		 * This does not mean the user has deauthorized the application, rather that
+		 * they are simply logged-out of Facebook.
+		 * 
+		 * @event Connect#logout
+		 * @type {Object}
+		 * @property {Object} response FB API's response
+		 */
 		that.dispatchEvent('logout', { response: response });
 	}
 	
 	/**
 	 * Facebook login helper
 	 * 
+	 * When instantiated the class automatically asynchronously loads the FB SDK.
+	 * 
+	 * After the FB SDK is loaded and the DOMContentLoaded event fires the
+	 * `init` method of the class. This method initializes the FB SDK, checks
+	 * the current user's status (`connected`, `not_authorized` or `uknown`).
+	 * 
+	 * Based on this status either the `login` or `logout` events are dispatched.
+	 * The `login` event is dispatched if the status is `connected` and the
+	 * `logout` one if one of the other two statuses is present.
+	 * 
+	 * If the status of the user changes associated events are dispatched as well.
+	 * The difference is that in such a follow-up status change if the user is now
+	 * `not_authorized` then a `not_authorized` event will be dispatched, rather
+	 * than the original `logout` one.
+	 * 
+	 * Based on options set for "login" and "logout" buttons necessary functionality
+	 * is assigned to those.
+	 * 
 	 * @class Connect
-	 * @constructor
 	 * @since 1.0.0
-	 * @extends {core.EventDispatcher}
-	 * @param {Object} options See Connect.defaultInitOptions
+	 * @extends {EventDispatcher}
+	 * @param {Object} options See {@link Connect#defaultInitOptions|defaultInitOptions}
+	 * @fires {@link Connect#login|login}
+	 * @fires {@link Connect#logout|logout}
+	 * @fires {@link Connect#not_authorized|not_authorized}
 	 */
 	var Connect = function (options) {
 		that = this;
@@ -128,8 +238,11 @@ define('com.magadanski.fb.Connect', function () {
 		/**
 		 * Initialization options
 		 * 
-		 * @property options
-		 * @type {Object}
+		 * @access public
+		 * @instance
+		 * @member {Object} options
+		 * @memberOf Connect
+		 * @see {@link Connect#defaultInitOptions|defaultInitOptions}
 		 */
 		that.options = utils.extendOptions(that.defaultInitOptions, options);
 		
@@ -137,6 +250,9 @@ define('com.magadanski.fb.Connect', function () {
 		/**
 		 * Getter for the domReady private property
 		 * 
+		 * @access public
+		 * @instance
+		 * @memberOf Connect
 		 * @method getDomReady
 		 * @return {boolean} Whether the DOM is ready or not
 		 */
@@ -147,6 +263,9 @@ define('com.magadanski.fb.Connect', function () {
 		/**
 		 * Setter, which calls the getter as the value is auto-set.
 		 * 
+		 * @access public
+		 * @instance
+		 * @memberOf Connect
 		 * @method setDomReady
 		 */
 		that.setDomReady = function () {
@@ -156,6 +275,9 @@ define('com.magadanski.fb.Connect', function () {
 		/**
 		 * Getter for the fbReady private property
 		 * 
+		 * @access public
+		 * @instance
+		 * @memberOf Connect
 		 * @method getFbReady
 		 * @return {boolean} Whether the FB JS SDK has been loaded and initialized
 		 */
@@ -166,6 +288,9 @@ define('com.magadanski.fb.Connect', function () {
 		/**
 		 * Setter for the fbReady private property
 		 * 
+		 * @access public
+		 * @instance
+		 * @memberOf Connect
 		 * @method  setFbReady
 		 * @param {boolean} ready The new state for the property
 		 */
@@ -182,6 +307,9 @@ define('com.magadanski.fb.Connect', function () {
 		/**
 		 * Getter for the initialized private property
 		 * 
+		 * @access public
+		 * @instance
+		 * @memberOf Connect
 		 * @method getInitialized
 		 * @return {boolean} Whether the FB Login has been initialized
 		 */
@@ -192,6 +320,9 @@ define('com.magadanski.fb.Connect', function () {
 		/**
 		 * Helper method for accessing FB.api
 		 * 
+		 * @access public
+		 * @instance
+		 * @memberOf Connect
 		 * @method api
 		 * @param {string}   method                 The api method you'd like to call. Use RESTful path.
 		 * @param {Function} callback               The callback function to handle the result of the API call.
@@ -252,15 +383,74 @@ define('com.magadanski.fb.Connect', function () {
 	/**
 	 * The default initialization options.
 	 * 
-	 * Those options include `appId`, `xfbml`, `version`, `scope`, `loginButton`, `logoutButton`, `onConnected()`, `onLogout()` and `onNotAuthorized()`.
-	 * The only required option is `appId`. If you do not pass that none of the functionality will get executed.
-	 * The `xfbml` option is simply forwarded to FBs SDK, denoting whether XFBML tags on the page should be parsed. The default value us `true`.
-	 * The `version` option is another option passed to FBs SDK. This denotes that your code would expect functionality for that version of the API. The default value is 'v2.6'
-	 * You should pass a string with comma delimited permissions that your application needs as the `scope` option.
-	 * Pass a CSS selector for the `loginButton` option to hook proper login event handlers to the button.
-	 * The `logoutButton` option is similar to the `loginButton` one.
-	 * There are three options that should be used as callback functions: `onConnected()`, `onLogout()` and `onNotAthorized()`. Those are called respectively when the user logs-in, when he logs-out and when the page is loaded by a user who has loged-into Facebook but has not yet authenticated your application. Note that the `onNotAuthorized()` callback is executed on initialization of the Connect class (pretty-much on page load), so it may be annoying to the user to prompt them to log in right away.
+	 * Those options include:
 	 * 
+	 *  * `appId` _(string)_ -- the only required option
+	 *  	
+	 *  	If you do not pass that none of the functionality will get executed.
+	 *  	
+	 *  * `xfbml` _(boolean)_ -- default value us `true`
+	 *  	
+	 *  	Simply forwarded to FBs SDK, denoting whether XFBML tags on the page
+	 *  	should be parsed.
+	 *  	
+	 *  * `version` _(string)_ -- default value is 'v2.6'
+	 *  	
+	 *  	Another option passed to FBs SDK. This denotes that your code would
+	 *  	expect functionality for that version of the API.
+	 *  	
+	 *  * `scope` _(string)_
+	 *  	
+	 *  	You should pass a string with comma delimited permissions that your
+	 *  	application needs as the `scope` option.
+	 *  	
+	 *  	Note that requesting permissions is not equal to receiving them.
+	 *  	Facebook allows users to connect to your application providing
+	 *  	access to just some of the information you've asked for. So if
+	 *  	you're calling an API method that relies on special permissions
+	 *  	it is a good idea to always double-check them.
+	 *  	
+	 *  	The `api` method of the class has a built-in way to double-check
+	 *  	permissions, so just pass a string of those when calling it.
+	 *  	
+	 *  	Also, requesting too much permissions from the start may cause
+	 *  	users reject your application (in case they are not acquainted
+	 *  	with the option to simply disable them -- few users are).
+	 *  	
+	 *  	It is advised that the original login only requires some basic
+	 *  	public profile information for the users and when you get to
+	 *  	a meaningful situation where you need the permissions for some
+	 *  	API method -- you can double check for the permissions even if
+	 *  	those were not originally present in the `scope` option. This
+	 *  	will just ask the users for additional permissions.
+	 *  	
+	 *  * `loginButton` _(string)_
+	 *  	
+	 *  	Pass a CSS selector for the `loginButton` option to hook proper login
+	 *  	event handlers to the button.
+	 *  	
+	 *  * `logoutButton` _(string)_
+	 *  	
+	 *  	Similar to the `loginButton` one.
+	 *  	
+	 *  * `onConnected()` _(callback)_
+	 *  
+	 *  * `onLogout()` _(callback)_
+	 *  
+	 *  * `onNotAuthorized()` _(callback)_
+	 * 
+	 * There are three options that should be used as callback functions: `onConnected()`,
+	 * `onLogout()` and `onNotAthorized()`. Those are called respectively when the user
+	 * logs-in, when he logs-out and when the page is loaded by a user who has loged-into
+	 * Facebook but has not yet authenticated your application.
+	 * 
+	 * Note that the `onNotAuthorized()` callback is executed on initialization of the
+	 * Connect class (pretty-much on page load), so it may be annoying to the user to
+	 * prompt them to log in right away.
+	 * 
+	 * @access public
+	 * @instance
+	 * @memberOf Connect
 	 * @type {Object}
 	 */
 	Connect.prototype.defaultInitOptions = {
@@ -277,6 +467,24 @@ define('com.magadanski.fb.Connect', function () {
 	};
 	
 	// public methods
+	
+	/**
+	 * You can manually call the `login` method.
+	 * 
+	 * If the user has not yet authorized the application they will see a popup
+	 * asking them for permissions, according to the scope from the init options.
+	 * 
+	 * If the user is not logged-into Facebook the popup will first ask them to
+	 * do so and only then they will see the permissions requirements.
+	 * 
+	 * If the user has previously logged-in this will just take a second and will
+	 * fire the `login` event once connection is reestablished.
+	 * 
+	 * @access public
+	 * @instance
+	 * @memberOf Connect
+	 * @return {void}
+	 */
 	Connect.prototype.login = function () {
 		FB.login(function (response) {
 			if (response.status === 'connected') {
@@ -287,6 +495,17 @@ define('com.magadanski.fb.Connect', function () {
 		}, { scope: that.options.scope });
 	};
 	
+	/**
+	 * You can manualy call the `logout` method.
+	 * 
+	 * This will simply log a user out of Facebook. It will not de-authorize
+	 * your application, restricting it from future access.
+	 * 
+	 * @access public
+	 * @instance
+	 * @memberOf Connect
+	 * @return {void}
+	 */
 	Connect.prototype.logout = function () {
 		FB.logout(function (response) {
 			handleLogout(response);
