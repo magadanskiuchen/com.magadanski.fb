@@ -58,19 +58,6 @@ define('com.magadanski.fb.Connect', function () {
 				version: that.options.version
 			});
 			
-			FB.getLoginStatus(function (response) {
-				switch (response.status) {
-					case 'connected':
-						handleLogin(response);
-						break;
-					case 'not_authorized':
-					case 'unknown':
-					default:
-						handleLogout(response);
-						break;
-				}
-			});
-			
 			FB.Event.subscribe('auth.statusChange', function(response) {
 				switch (response.status) {
 					case 'not_authorized':
@@ -84,6 +71,8 @@ define('com.magadanski.fb.Connect', function () {
 						break;
 				}
 			});
+			
+			FB.getLoginStatus();
 			
 			var loginButton = document.querySelector(that.options.loginButton);
 			
@@ -117,11 +106,11 @@ define('com.magadanski.fb.Connect', function () {
 	 * @return {void}
 	 */
 	function handleNotAuthorized(response) {
-		document.body.classList.add('guest');
-		document.body.classList.remove('user');
+		document.body.classList.add(that.options.guestBodyClass);
+		document.body.classList.remove(that.options.userBodyClass);
 		
 		if (typeof(that.options.onNotAuthorized) === 'function') {
-			that.options.onNotAuthorized();
+			that.options.onNotAuthorized(response);
 		}
 		
 		/**
@@ -149,11 +138,11 @@ define('com.magadanski.fb.Connect', function () {
 	 * @return {void}
 	 */
 	function handleLogin(response) {
-		document.body.classList.add('user');
-		document.body.classList.remove('guest');
+		document.body.classList.add(that.options.userBodyClass);
+		document.body.classList.remove(that.options.guestBodyClass);
 		
 		if (typeof(that.options.onConnected) === 'function') {
-			that.options.onConnected();
+			that.options.onConnected(response);
 		}
 		
 		/**
@@ -178,11 +167,11 @@ define('com.magadanski.fb.Connect', function () {
 	 * @return {void}
 	 */
 	function handleLogout(response) {
-		document.body.classList.add('guest');
-		document.body.classList.remove('user');
+		document.body.classList.add(that.options.guestBodyClass);
+		document.body.classList.remove(that.options.userBodyClass);
 		
 		if (typeof(that.options.onLogout) === 'function') {
-			that.options.onLogout();
+			that.options.onLogout(response);
 		}
 		
 		/**
@@ -394,12 +383,12 @@ define('com.magadanski.fb.Connect', function () {
 	 *  	Simply forwarded to FBs SDK, denoting whether XFBML tags on the page
 	 *  	should be parsed.
 	 *  	
-	 *  * `version` _(string)_ -- default value is 'v2.6'
+	 *  * `version` _(string)_ -- default value is `'v2.6'`
 	 *  	
 	 *  	Another option passed to FBs SDK. This denotes that your code would
 	 *  	expect functionality for that version of the API.
 	 *  	
-	 *  * `scope` _(string)_
+	 *  * `scope` _(string)_ -- default value is 'public_profile,email'
 	 *  	
 	 *  	You should pass a string with comma delimited permissions that your
 	 *  	application needs as the `scope` option.
@@ -424,15 +413,41 @@ define('com.magadanski.fb.Connect', function () {
 	 *  	those were not originally present in the `scope` option. This
 	 *  	will just ask the users for additional permissions.
 	 *  	
-	 *  * `loginButton` _(string)_
+	 *  * `loginButton` _(string)_ -- default value is `'.login'`
 	 *  	
 	 *  	Pass a CSS selector for the `loginButton` option to hook proper login
 	 *  	event handlers to the button.
 	 *  	
-	 *  * `logoutButton` _(string)_
+	 *  * `logoutButton` _(string)_ -- default value is `'.logout'`
 	 *  	
 	 *  	Similar to the `loginButton` one.
 	 *  	
+	 *  * `locale` _(string)_ -- default value is `'en_US'`
+	 *  	
+	 *  	This is used when building the URL for the FB SDK to load.
+	 *  	
+	 *  	The SDK is available as multiple languages at different
+	 *  	URLs, so you need to load the proper one in order for
+	 *  	your application to be localized.
+	 *  	
+	 *  	You can pass a locale here as '`{language_code}_{country_code}`'
+	 *  	where `{language_code}` is a two-lowercase representation
+	 *  	of the language (for example 'en' or 'pt') and
+	 *  	`{country_code}` is a two-lowercase representation of the
+	 *  	country (for example 'US' or 'GB' in case for English
+	 *  	and 'BR' or 'PT' for Portuguese).
+	 *  	
+	 *  * `userBodyClass` _(string)_ -- default value is `'user'`
+	 *  	
+	 *  	This class is assigned to the body tag after successful
+	 *  	connection to the user's account is established.
+	 *  
+	 *  * `guestBodyClass` _(string)_ -- default value is `'guest'`
+	 *  	
+	 *  	This class is assigned to the body tag if a user logs
+	 *  	out of FB when on the site or if they do not authorize
+	 *  	the application.
+	 *  
 	 *  * `onConnected()` _(callback)_
 	 *  
 	 *  * `onLogout()` _(callback)_
@@ -461,6 +476,8 @@ define('com.magadanski.fb.Connect', function () {
 		loginButton: '.login',
 		logoutButton: '.logout',
 		locale: 'en_US',
+		userBodyClass: 'user',
+		guestBodyClass: 'guest',
 		onConnected: function (response) {},
 		onLogout: function (response) {},
 		onNotAuthorized: function (response) {}

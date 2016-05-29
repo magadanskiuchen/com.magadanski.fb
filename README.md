@@ -61,11 +61,11 @@ Based on options set for "login" and "logout" buttons necessary functionality is
 	
 	Simply forwarded to FBs SDK, denoting whether XFBML tags on the page should be parsed.
 	
-* `version` _(string)_ -- default value is 'v2.6'
+* `version` _(string)_ -- default value is `'v2.6'`
 	
 	Another option passed to FBs SDK. This denotes that your code would expect functionality for that version of the API.
 	
-* `scope` _(string)_
+* `scope` _(string)_ -- default value is `'public_profile,email'`
 	
 	You should pass a string with comma delimited permissions that your application needs as the `scope` option.
 	
@@ -77,14 +77,30 @@ Based on options set for "login" and "logout" buttons necessary functionality is
 	
 	It is advised that the original login only requires some basic public profile information for the users and when you get to a meaningful situation where you need the permissions for some API method -- you can double check for the permissions even if those were not originally present in the `scope` option. This will just ask the users for additional permissions.
 	
-* `loginButton` _(string)_
+* `loginButton` _(string)_ -- default value is `'.login'`
 	
 	Pass a CSS selector for the `loginButton` option to hook proper login event handlers to the button.
 	
-* `logoutButton` _(string)_
+* `logoutButton` _(string)_ -- default value is `'.logout'`
 	
 	Similar to the `loginButton` one.
+
+* `locale` _(string)_ -- default value is `'en_US'`
 	
+	This is used when building the URL for the FB SDK to load.
+	
+	The SDK is available as multiple languages at different URLs, so you need to load the proper one in order for your application to be localized.
+	
+	You can pass a locale here as '`{language_code}_{country_code}`' where `{language_code}` is a two-lowercase representation of the language (for example 'en' or 'pt') and `{country_code}` is a two-lowercase representation of the country (for example 'US' or 'GB' in case for English and 'BR' or 'PT' for Portuguese).
+
+* `userBodyClass` _(string)_ -- default value is `'user'`
+	
+	This class is assigned to the body tag after successful connection to the user's account is established.
+
+* `guestBodyClass` _(string)_ -- default value is `'guest'`
+	
+	This class is assigned to the body tag if a user logs out of FB when on the site or if they do not authorize the application.
+
 * `onConnected()` _(callback)_
  
 * `onLogout()` _(callback)_
