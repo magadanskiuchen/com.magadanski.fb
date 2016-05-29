@@ -200,14 +200,10 @@ define('com.magadanski.fb.Connect', function () {
 	 * `init` method of the class. This method initializes the FB SDK, checks
 	 * the current user's status (`connected`, `not_authorized` or `uknown`).
 	 * 
-	 * Based on this status either the `login` or `logout` events are dispatched.
-	 * The `login` event is dispatched if the status is `connected` and the
-	 * `logout` one if one of the other two statuses is present.
+	 * Based on this status a corresponding event of `login`, `not_authorized`
+	 * or `logout` is dispatched.
 	 * 
-	 * If the status of the user changes associated events are dispatched as well.
-	 * The difference is that in such a follow-up status change if the user is now
-	 * `not_authorized` then a `not_authorized` event will be dispatched, rather
-	 * than the original `logout` one.
+	 * If the status of the user changes then associated events are dispatched as well.
 	 * 
 	 * Based on options set for "login" and "logout" buttons necessary functionality
 	 * is assigned to those.
