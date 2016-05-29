@@ -35,6 +35,8 @@ var conn = new com.magadanski.fb.Connect({
 	loginButton: '.login', // CSS selector to the element you'd like to use as a "Login" button
 	logoutButton: '.logout', // CSS selector to the element you'd like to use as a "Logout" button
 	locale: 'en_US', // locale of the SDK to load
+	userBodyClass: 'user', // class applied to the body upon profile connection
+	guestBodyClass: 'guest', // class applied to the body upon profile disconnection
 	onConnected: function (response) {}, // callback for when a user has connected their FB account
 	onLogout: function (response) {}, // callback when a user has logged out
 	onNotAuthorized: function (response) {} // callback when a user has clicked on the "Login" button but has rejected the request for permissions

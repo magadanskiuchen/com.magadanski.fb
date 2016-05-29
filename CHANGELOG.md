@@ -1,6 +1,14 @@
 # Change Log
 
-## active development
+## future development
+
+## [1.0.3 Duplicate events fix, body class options, updated docs](https://github.com/magadanskiuchen/com.magadanski.fb/releases/tag/1.0.3) (2016-05-29)
+
+[Full changelog](https://github.com/magadanskiuchen/com.magadanski.fb/compare/1.0.2...1.0.3)
+
+Remove duplicate event firing on init.
+
+Add options to control user and guest body classes. Closed [`user` and `guest` classes assigned to the body are too generic](https://github.com/magadanskiuchen/com.magadanski.fb/issues/2) issue.
 
 Update default version of FB's JS SDK to 2.6.
 

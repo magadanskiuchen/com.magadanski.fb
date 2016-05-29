@@ -3,7 +3,7 @@
  * 
  * @namespace fb
  * @author Georgi Popov
- * @version 1.0.0
+ * @version 1.0.3
  * @license http://www.gnu.org/licenses/gpl-3.0.en.html GPLv3
  * @requires com/magadanski/core/core.js
  * @requires com/magadanski/core/utils.js
