@@ -2,6 +2,14 @@
 
 ## future development
 
+## [1.0.4 Update default version of FB Graph API to 2.7](https://github.com/magadanskiuchen/com.magadanski.fb/releases/tag/1.0.4) (2016-09-10)
+
+[Full changelog](https://github.com/magadanskiuchen/com.magadanski.fb/compare/1.0.3...1.0.4)
+
+By default **2.7** will be passed as `version` option upon instantiating a new `com.magadanski.fb.Connect` object.
+
+Read more about version 2.7 at [https://developers.facebook.com/blog/post/2016/07/14/graph-api-v27/](https://developers.facebook.com/blog/post/2016/07/14/graph-api-v27/)
+
 ## [1.0.3 Duplicate events fix, body class options, updated docs](https://github.com/magadanskiuchen/com.magadanski.fb/releases/tag/1.0.3) (2016-05-29)
 
 [Full changelog](https://github.com/magadanskiuchen/com.magadanski.fb/compare/1.0.2...1.0.3)

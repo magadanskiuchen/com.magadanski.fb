@@ -1,0 +1,30 @@
+{
+  "name": "com.magadanski.fb",
+  "version": "1.0.4",
+  "description": "Facebook JS Helpers",
+  "main": "Connect.js",
+  "scripts": {
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/magadanskiuchen/com.magadanski.fb.git"
+  },
+  "keywords": [
+    "fb",
+    "magadanski",
+    "framework",
+    "Facebook",
+    "login",
+    "connect"
+  ],
+  "author": "Georgi Popov <magadanski_uchen@yahoo.com> (http://magadanski.com)",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/magadanskiuchen/com.magadanski.fb/issues"
+  },
+  "homepage": "https://github.com/magadanskiuchen/com.magadanski.fb#readme",
+  "dependencies": {
+    "com.magadanski.core": "^1.0.x"
+  }
+}

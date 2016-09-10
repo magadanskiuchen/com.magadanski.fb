@@ -30,7 +30,7 @@ Instantiate the class as:
 var conn = new com.magadanski.fb.Connect({
 	appId: '', // enter FB App ID here; create an application from https://developers.facebook.com/apps
 	xfbml: true, // whether to parse XFBML tags
-	version: 'v2.6', // what version of the JS SDK is to be included
+	version: 'v2.7', // what version of the JS SDK is to be included
 	scope: 'public_profile,email', // what permissions are required
 	loginButton: '.login', // CSS selector to the element you'd like to use as a "Login" button
 	logoutButton: '.logout', // CSS selector to the element you'd like to use as a "Logout" button
@@ -63,7 +63,7 @@ Based on options set for "login" and "logout" buttons necessary functionality is
 	
 	Simply forwarded to FBs SDK, denoting whether XFBML tags on the page should be parsed.
 	
-* `version` _(string)_ -- default value is `'v2.6'`
+* `version` _(string)_ -- default value is `'v2.7'`
 	
 	Another option passed to FBs SDK. This denotes that your code would expect functionality for that version of the API.
 	

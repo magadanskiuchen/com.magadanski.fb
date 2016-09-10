@@ -3,7 +3,7 @@
  * 
  * @namespace fb
  * @author Georgi Popov
- * @version 1.0.3
+ * @version 1.0.4
  * @license http://www.gnu.org/licenses/gpl-3.0.en.html GPLv3
  * @requires com/magadanski/core/core.js
  * @requires com/magadanski/core/utils.js
@@ -379,7 +379,7 @@ define('com.magadanski.fb.Connect', function () {
 	 *  	Simply forwarded to FBs SDK, denoting whether XFBML tags on the page
 	 *  	should be parsed.
 	 *  	
-	 *  * `version` _(string)_ -- default value is `'v2.6'`
+	 *  * `version` _(string)_ -- default value is `'v2.7'`
 	 *  	
 	 *  	Another option passed to FBs SDK. This denotes that your code would
 	 *  	expect functionality for that version of the API.
@@ -467,7 +467,7 @@ define('com.magadanski.fb.Connect', function () {
 	Connect.prototype.defaultInitOptions = {
 		appId: '',
 		xfbml: true,
-		version: 'v2.6',
+		version: 'v2.7',
 		scope: 'public_profile,email',
 		loginButton: '.login',
 		logoutButton: '.logout',
